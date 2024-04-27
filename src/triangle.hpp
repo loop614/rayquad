@@ -5,7 +5,7 @@
 class Triangle {
     public:
         Triangle();
-        void Init();
+        void Init(Vector2 a, Vector2 b, Vector2 c);
         Vector2 a;
         Vector2 b;
         Vector2 c;
@@ -15,6 +15,7 @@ class Triangle {
         float sidea;
         float sideb;
         float sidec;
+        bool IsVecIn(Vector2 p);
 
     private:
         void CalculateSides();

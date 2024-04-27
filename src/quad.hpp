@@ -11,10 +11,11 @@ public:
     Quad();
     ~Quad();
     void SetDimensions(Vector2 a, Vector2 b, Vector2 c, Vector2 d);
-    void CalculateIsRect();
+    void CalculateIsRectIsSquare();
     void CalculateSides();
+    void CalculateIsTilted();
     void Draw();
-    bool IsVector2Inside(Vector2 p);
+    bool IsVector2In(Vector2 p);
     bool IsReady;
 
 private:
@@ -26,8 +27,9 @@ private:
     Triangle* tri_abd;
     Triangle* tri_bcd;
     Color color;
-    bool is_rect;
+    bool is_tilted;
     bool is_square;
+    bool is_rect;
     float sideab;
     float sidebc;
     float sidecd;
@@ -36,4 +38,7 @@ private:
 
     std::vector<Vector2> GetPoints();
     void CalculateCenter(Vector2 p1, Vector2 p2);
+    bool IsVecInSquareRectNotTilted(Vector2 p);
+    bool IsVecInRect(Vector2 p);
+    bool IsVecInDefault(Vector2 p);
 };

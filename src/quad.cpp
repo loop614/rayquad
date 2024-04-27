@@ -14,6 +14,7 @@ Quad::Quad()
     this->tri_abd = new Triangle();
     this->tri_bcd = new Triangle();
     this->color = BLACK;
+    this->is_tilted = false;
     this->is_rect = false;
     this->is_square = false;
     this->sideab = 0.0;
@@ -29,34 +30,19 @@ Quad::~Quad() {
 }
 
 void Quad::SetDimensions(Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
-    this->a.x = a.x;
-    this->a.y = a.y;
-    this->b.x = b.x;
-    this->b.y = b.y;
-    this->c.x = c.x;
-    this->c.y = c.y;
-    this->d.x = d.x;
-    this->d.y = d.y;
+    this->a = {a.x, a.y};
+    this->b = {b.x, b.y};
+    this->c = {c.x, c.y};
+    this->d = {d.x, d.y};
 
-    this->tri_abd->a.x = this->a.x;
-    this->tri_abd->a.y = this->a.y;
-    this->tri_abd->b.x = this->b.x;
-    this->tri_abd->b.y = this->b.y;
-    this->tri_abd->c.x = this->d.x;
-    this->tri_abd->c.y = this->d.y;
-    this->tri_abd->Init();
-
-    this->tri_bcd->a.x = this->b.x;
-    this->tri_bcd->a.y = this->b.y;
-    this->tri_bcd->b.x = this->c.x;
-    this->tri_bcd->b.y = this->c.y;
-    this->tri_bcd->c.x = this->d.x;
-    this->tri_bcd->c.y = this->d.y;
-    this->tri_bcd->Init();
-    this->CalculateIsRect();
+    this->tri_abd->Init(this->a, this->b, this->d);
+    this->tri_bcd->Init(this->b, this->c, this->d);
+    this->CalculateIsRectIsSquare();
+    this->CalculateSides();
+    this->CalculateIsTilted();
 }
 
-void Quad::CalculateIsRect()
+void Quad::CalculateIsRectIsSquare()
 {
     this->is_rect = false;
     if (this->tri_abd->alpha.is90())
@@ -77,11 +63,6 @@ void Quad::CalculateIsRect()
         this->is_rect = true;
         this->is_square = this->tri_abd->alpha.is45() and this->tri_abd->beta.is45();
     }
-
-    if (this->is_rect)
-    {
-        this->CalculateSides();
-    }
 }
 
 void Quad::CalculateSides()
@@ -92,6 +73,21 @@ void Quad::CalculateSides()
     this->sideda = Vector2Distance(this->d, this->a);
 }
 
+void Quad::CalculateIsTilted()
+{
+    this->is_tilted = !(
+        Vector2Angle({0, 1}, Vector2Subtract(this->b, this->a)) == 0 ||
+        Vector2Angle({0, 1}, Vector2Subtract(this->c, this->b)) == 0 ||
+        Vector2Angle({0, 1}, Vector2Subtract(this->d, this->c)) == 0 ||
+        Vector2Angle({0, 1}, Vector2Subtract(this->d, this->a)) == 0);
+
+    if (this->is_tilted) {
+        std::cout << "it is tilted" << std::endl;
+    } else {
+        std::cout << "it is not tilted" << std::endl;
+    }
+}
+
 void Quad::Draw()
 {
     DrawLine(this->a.x, this->a.y, this->b.x, this->b.y, BLACK);
@@ -100,18 +96,32 @@ void Quad::Draw()
     DrawLine(this->d.x, this->d.y, this->a.x, this->a.y, BLACK);
 }
 
-bool Quad::IsVector2Inside(Vector2 x)
+bool Quad::IsVector2In(Vector2 x)
+{
+    if (this->is_rect) {
+        return this->IsVecInRect(x);
+    }
+
+    return this->IsVecInDefault(x);
+}
+
+bool Quad::IsVecInRect(Vector2 p)
 {
     Vector2 ab = Vector2Subtract(this->b, this->a);
-    Vector2 am = Vector2Subtract(x, this->a);
+    Vector2 am = Vector2Subtract(p, this->a);
     Vector2 bc = Vector2Subtract(this->c, this->b);
-    Vector2 bm = Vector2Subtract(x, this->b);
+    Vector2 bm = Vector2Subtract(p, this->b);
     float dotABAM = Vector2DotProduct(ab, am);
     float dotABAB = Vector2DotProduct(ab, ab);
     float dotBCBM = Vector2DotProduct(bc, bm);
     float dotBCBC = Vector2DotProduct(bc, bc);
 
     return 0 <= dotABAM and dotABAM <= dotABAB and 0 <= dotBCBM and dotBCBM <= dotBCBC;
+}
+
+bool Quad::IsVecInDefault(Vector2 p)
+{
+    return this->tri_abd->IsVecIn(p) || this->tri_bcd->IsVecIn(p);
 }
 
 std::vector<Vector2> Quad::GetPoints()
