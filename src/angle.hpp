@@ -2,9 +2,9 @@
 
 class Angle {
     public:
-        Angle() = default;
         Angle(float val);
         float val;
+        bool is0();
         bool is45();
         bool is90();
 

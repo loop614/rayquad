@@ -5,6 +5,11 @@ Angle::Angle(float val) : val{val}
 {
 }
 
+bool Angle::is0()
+{
+    return abs(this->val) < ERROR_TOLERANCE;
+}
+
 bool Angle::is45()
 {
     return abs(45 - this->val) < ERROR_TOLERANCE;

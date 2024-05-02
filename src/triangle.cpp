@@ -3,17 +3,19 @@
 #include <math.h>
 #include <iostream>
 
-Triangle::Triangle()
-{
-}
-
-void Triangle::Init(Vector2 a, Vector2 b, Vector2 c)
+Triangle::Triangle(Vector2 a, Vector2 b, Vector2 c)
 {
     this->a = {a.x, a.y};
     this->b = {b.x, b.y};
     this->c = {c.x, c.y};
     this->CalculateSides();
     this->CalculateAngles();
+}
+
+Triangle::~Triangle() {
+    delete this->alpha;
+    delete this->beta;
+    delete this->gamma;
 }
 
 void Triangle::CalculateSides()
@@ -29,15 +31,15 @@ void Triangle::CalculateSides()
 
 void Triangle::CalculateAngles()
 {
-    this->alpha.val = (180.0 / M_PI) * acos(
-        (this->sideb * this->sideb + this->sidec * this->sidec - this->sidea * this->sidea) / (2 * this->sideb * this->sidec));
-    this->gamma.val = (180.0 / M_PI) * acos(
-        (this->sidea * this->sidea + this->sideb * this->sideb - this->sidec * this->sidec) / (2 * this->sidea * this->sideb));
-    this->beta.val = 180.0 - this->alpha.val - this->gamma.val;
+    this->alpha = new Angle((180.0 / M_PI) * acos(
+        (this->sideb * this->sideb + this->sidec * this->sidec - this->sidea * this->sidea) / (2 * this->sideb * this->sidec)));
+    this->gamma = new Angle((180.0 / M_PI) * acos(
+        (this->sidea * this->sidea + this->sideb * this->sideb - this->sidec * this->sidec) / (2 * this->sidea * this->sideb)));
+    this->beta = new Angle(180.0 - this->alpha->val - this->gamma->val);
 
-    std::cout << "alpha " << this->alpha.val << std::endl;
-    std::cout << "beta " << this->beta.val << std::endl;
-    std::cout << "gamma " << this->gamma.val << std::endl;
+    std::cout << "alpha " << this->alpha->val << std::endl;
+    std::cout << "beta " << this->beta->val << std::endl;
+    std::cout << "gamma " << this->gamma->val << std::endl;
 }
 
 bool Triangle::IsVecIn(Vector2 p)

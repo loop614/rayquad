@@ -8,10 +8,9 @@
 class Quad
 {
 public:
-    Quad();
+    Quad(Vector2 a, Vector2 b, Vector2 c, Vector2 d, bool orderVectors = false);
     ~Quad();
-    void SetDimensions(Vector2 a, Vector2 b, Vector2 c, Vector2 d);
-    void CalculateIsRectIsSquare();
+    void CalculateIsRect();
     void CalculateSides();
     void CalculateIsTilted();
     void Draw();
@@ -24,9 +23,10 @@ private:
     Vector2 c;
     Vector2 d;
     Vector2 center;
-    Triangle* tri_abd;
-    Triangle* tri_bcd;
-    Color color;
+    Angle* alpha;
+    Angle* beta;
+    Angle* gamma;
+    Angle* delta;
     bool is_tilted;
     bool is_square;
     bool is_rect;
@@ -35,10 +35,13 @@ private:
     float sidecd;
     float sideda;
     float diaginal_len;
+    Triangle* tri_abd;
+    Triangle* tri_bcd;
+    Color color;
 
     std::vector<Vector2> GetPoints();
     void CalculateCenter(Vector2 p1, Vector2 p2);
-    bool IsVecInSquareRectNotTilted(Vector2 p);
+    bool AreAllSidesEqual();
     bool IsVecInRect(Vector2 p);
     bool IsVecInDefault(Vector2 p);
 };
