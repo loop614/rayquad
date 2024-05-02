@@ -6,47 +6,7 @@
 Quad::Quad(Vector2 a, Vector2 b, Vector2 c, Vector2 d, bool orderVectors)
 {
     if (orderVectors) {
-        Vector2 root = Vector2{0,0};
-        float min = std::numeric_limits<float>::max();
-        float max = 0;
-        for (Vector2 vec2 : {a, b, c, d}) {
-            float d = Vector2DistanceSqr(root, vec2);
-            if (d < min) {
-                min = d;
-                this->d = {vec2.x, vec2.y};
-            }
-            if (d > max) {
-                max = d;
-                this->b = {vec2.x, vec2.y};
-            }
-        }
-        std::array<Vector2, 2> othertwo;
-        size_t index = 0;
-        for (Vector2 vec2 : {a, b, c, d}) {
-            if (this->b.x == vec2.x && this->b.y == vec2.y) {
-                continue;
-            }
-            if (this->d.x == vec2.x && this->d.y == vec2.y) {
-                continue;
-            }
-            othertwo[index++] = {vec2.x, vec2.y};
-            if (index == 2) {
-                break;
-            }
-        }
-
-        if (othertwo[0].x > othertwo[1].x) {
-            this->a = {othertwo[1].x, othertwo[1].y};
-            this->c = {othertwo[0].x, othertwo[0].y};
-        } else {
-            this->a = {othertwo[0].x, othertwo[0].y};
-            this->c = {othertwo[1].x, othertwo[1].y};
-        }
-        std::cout << "a at " << this->a.x << "-" << this->a.y;
-        std::cout << "b at " << this->b.x << "-" << this->b.y;
-        std::cout << "c at " << this->c.x << "-" << this->c.y;
-        std::cout << "d at " << this->d.x << "-" << this->d.y;
-
+        this->OrderVectors(a, b, c, d);
     } else {
         this->a = {a.x, a.y};
         this->b = {b.x, b.y};
@@ -74,6 +34,49 @@ Quad::~Quad()
     delete this->delta;
     delete this->tri_abd;
     delete this->tri_bcd;
+}
+
+void Quad::OrderVectors(Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
+    Vector2 root = Vector2{0,0};
+    float min = std::numeric_limits<float>::max();
+    float max = 0;
+    for (Vector2 vec2 : {a, b, c, d}) {
+        float d = Vector2DistanceSqr(root, vec2);
+        if (d < min) {
+            min = d;
+            this->d = {vec2.x, vec2.y};
+        }
+        if (d > max) {
+            max = d;
+            this->b = {vec2.x, vec2.y};
+        }
+    }
+    std::array<Vector2, 2> othertwo;
+    size_t index = 0;
+    for (Vector2 vec2 : {a, b, c, d}) {
+        if (this->b.x == vec2.x && this->b.y == vec2.y) {
+            continue;
+        }
+        if (this->d.x == vec2.x && this->d.y == vec2.y) {
+            continue;
+        }
+        othertwo[index++] = {vec2.x, vec2.y};
+        if (index == 2) {
+            break;
+        }
+    }
+
+    if (othertwo[0].x > othertwo[1].x) {
+        this->a = {othertwo[1].x, othertwo[1].y};
+        this->c = {othertwo[0].x, othertwo[0].y};
+    } else {
+        this->a = {othertwo[0].x, othertwo[0].y};
+        this->c = {othertwo[1].x, othertwo[1].y};
+    }
+    std::cout << "a at " << this->a.x << "-" << this->a.y;
+    std::cout << "b at " << this->b.x << "-" << this->b.y;
+    std::cout << "c at " << this->c.x << "-" << this->c.y;
+    std::cout << "d at " << this->d.x << "-" << this->d.y;
 }
 
 void Quad::CalculateIsRect()

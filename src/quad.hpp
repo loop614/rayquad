@@ -10,6 +10,7 @@ class Quad
 public:
     Quad(Vector2 a, Vector2 b, Vector2 c, Vector2 d, bool orderVectors = false);
     ~Quad();
+
     void CalculateIsRect();
     void CalculateSides();
     void CalculateIsTilted();
@@ -39,6 +40,7 @@ private:
     Triangle* tri_bcd;
     Color color;
 
+    void OrderVectors(Vector2 a, Vector2 b, Vector2 c, Vector2 d);
     std::vector<Vector2> GetPoints();
     void CalculateCenter(Vector2 p1, Vector2 p2);
     bool AreAllSidesEqual();

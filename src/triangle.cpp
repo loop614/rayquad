@@ -31,9 +31,10 @@ void Triangle::CalculateSides()
 
 void Triangle::CalculateAngles()
 {
-    this->alpha = new Angle((180.0 / M_PI) * acos(
+    float p180i = 180.0 / M_PI;
+    this->alpha = new Angle(p180i * acos(
         (this->sideb * this->sideb + this->sidec * this->sidec - this->sidea * this->sidea) / (2 * this->sideb * this->sidec)));
-    this->gamma = new Angle((180.0 / M_PI) * acos(
+    this->gamma = new Angle(p180i * acos(
         (this->sidea * this->sidea + this->sideb * this->sideb - this->sidec * this->sidec) / (2 * this->sidea * this->sideb)));
     this->beta = new Angle(180.0 - this->alpha->val - this->gamma->val);
 
